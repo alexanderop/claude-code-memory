@@ -1,0 +1,12 @@
+{
+  "name": "memory",
+  "version": "0.1.0",
+  "description": "Hermes-style bounded, curated persistent memory for Claude Code: MEMORY.md + USER.md injected at session start, managed through an MCP tool with capacity enforcement, substring matching, dedup, security scanning, and an optional background self-improvement review.",
+  "author": { "name": "Alexander Opalic" },
+  "mcpServers": {
+    "memory": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/memory-server.mjs"]
+    }
+  }
+}
