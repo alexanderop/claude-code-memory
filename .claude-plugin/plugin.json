@@ -1,6 +1,6 @@
 {
   "name": "memory",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Hermes-style bounded, curated persistent memory for Claude Code: MEMORY.md + USER.md injected at session start, managed through an MCP tool with capacity enforcement, substring matching, dedup, security scanning, and an optional background self-improvement review.",
   "author": { "name": "Alexander Opalic" },
   "mcpServers": {

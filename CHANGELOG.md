@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.1
+
+- **Test suite** — layered, zero-dependency Node harness ported from the afk
+  plugin's strategy (`docs/testing-strategy.md`). Unit tests exercise the
+  `store` / `security` / `correction` / `curator` modules and manifests against
+  temp dirs; integration tests check version consistency across the three
+  manifests, hook wiring, the MCP path, markdown links, and a real MCP stdio
+  round-trip; `test:e2e` loads the plugin via `claude --plugin-dir`. Run with
+  `npm test` (zero token).
+- **Security fix surfaced by the new tests** — the secret-key scanner now catches
+  the canonical `AWS_SECRET_ACCESS_KEY` (and other multi-segment `*_KEY` names),
+  which the previous `(SECRET|ACCESS|API)?_?KEY` pattern let through.
+
 ## 0.3.0
 
 The Curator — Hermes' `active → stale (30d) → archived (90d)` skill lifecycle.

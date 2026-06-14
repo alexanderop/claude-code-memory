@@ -124,6 +124,22 @@ It is recursion-guarded (`MEMORY_REVIEW=1` on the child) and never blocks the tu
 | `MEMORY_CURATOR_ARCHIVE_DAYS` | `90` | Unused-days before a skill is archivable |
 | `MEMORY_CURATOR_INTERVAL_DAYS` | `7` | Min days between Curator sweeps |
 
+## Testing
+
+Layered by cost, zero dev dependencies (plain Node — no Bun, no `npm install`):
+
+```bash
+npm test                 # unit + integration — zero token, ~1s, run on every edit
+npm run test:unit        # manifests, skill frontmatter, and the store/security/correction/curator modules
+npm run test:integration # version consistency, hook wiring, MCP path, markdown links, real MCP stdio round-trip
+npm run test:e2e         # model-backed: loads the plugin via `claude --plugin-dir` (~$0.01, needs auth)
+```
+
+The unit suite exercises the real logic modules against temp dirs (never your
+`~/.claude`); the integration suite spawns the actual MCP server and drives it
+over JSON-RPC. See [docs/testing-strategy.md](docs/testing-strategy.md) for the
+full layout and CI policy.
+
 ## Not included (vs Hermes)
 
 - **Write-approval gating** — add a `PreToolUse` hook matching `mcp__memory__memory_*`

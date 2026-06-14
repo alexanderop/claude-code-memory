@@ -1,7 +1,13 @@
 {
   "name": "claude-memory-plugin",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
-  "description": "Hermes-style persistent memory MCP server + hooks for Claude Code. Zero runtime dependencies."
+  "description": "Hermes-style persistent memory MCP server + hooks for Claude Code. Zero runtime dependencies.",
+  "scripts": {
+    "test": "node tests/check.mjs",
+    "test:unit": "node tests/unit/run-unit-tests.mjs",
+    "test:integration": "node tests/integration/run-integration-tests.mjs",
+    "test:e2e": "node tests/e2e/plugin-load.mjs"
+  }
 }
