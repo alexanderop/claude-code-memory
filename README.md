@@ -19,9 +19,31 @@ Two files persist across sessions and are injected into context at session start
 | Substring matching for replace/remove | `matchOne()` — short unique substring, errors if ambiguous |
 | Duplicate prevention | Exact-match no-op on add |
 | Security scanning | `lib/security.mjs` — injection/exfil/backdoor patterns + invisible Unicode |
-| Background self-improvement review | `Stop` hook → detached `claude -p` review (`scripts/review.mjs`, opt-in) |
+| Background self-improvement review (memory only) | `Stop` hook → detached `claude -p` review (`scripts/review.mjs`, opt-in) |
+| Correction detector | `UserPromptSubmit` hook → regex (`lib/correction.mjs`, `scripts/detect-correction.mjs`) |
+| Skill capture (procedural memory) | Always-on policy injected at session start — agent writes `SKILL.md` **inline** |
 
 The model decides *what* to save via `skills/memory/SKILL.md`; the server enforces *how*.
+
+## Three learning loops
+
+Modeled on the real [`pi-hermes-memory`](https://github.com/chandra447/pi-hermes-memory)
+implementation (which splits learning into separate loops on purpose):
+
+1. **Background review (memory)** — `Stop` hook fires a detached `claude -p` that mines
+   the finished turn for durable facts/preferences/corrections and saves them via the
+   memory tools. **It is explicitly forbidden from writing skills** — a stale subprocess
+   with only a transcript snapshot would author bad procedures. Opt-in (token cost).
+2. **Correction detector** — `UserPromptSubmit` hook runs a free, two-pass regex over each
+   prompt (strong patterns always fire; weak patterns need a following directive word;
+   negative patterns suppress). On a hit it nudges the agent to persist the lesson *before*
+   answering. Detection is pure regex — no LLM call.
+3. **Skill capture (procedural)** — done **inline by the main agent**, never in a subprocess.
+   The session-start policy tells it to write a structured `SKILL.md`
+   (`## When to Use / ## Procedure / ## Pitfalls / ## Verification`) to `~/.claude/skills/`
+   (portable) or `.claude/skills/` (repo-specific) the moment it finishes a complex,
+   reusable workflow — while it still has full context. Claude Code's native skill
+   discovery then handles progressive disclosure.
 
 ## Install (as a Claude Code plugin)
 

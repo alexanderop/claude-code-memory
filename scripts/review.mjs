@@ -40,6 +40,8 @@ function main() {
     "Skip ephemera, one-off paths, and anything already obvious from the repo.",
     "Save each via memory_add (or memory_replace to merge with an overlapping entry).",
     "Keep entries compact and information-dense. If a store is full, consolidate first.",
+    "Do NOT create or modify skills here. Procedural skills are captured INLINE by the",
+    "main agent during normal work — this stale background pass must never write them.",
     "If nothing is worth saving, do nothing.",
   ].join("\n");
 
