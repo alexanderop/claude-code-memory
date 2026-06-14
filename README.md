@@ -23,15 +23,48 @@ Two files persist across sessions and are injected into context at session start
 
 The model decides *what* to save via `skills/memory/SKILL.md`; the server enforces *how*.
 
-## Install
+## Install (as a Claude Code plugin)
 
-```bash
-cd ~/Projects/memory-plugin && npm install
+This repo is also a single-plugin **marketplace** (`.claude-plugin/marketplace.json`),
+so installation is two slash commands inside Claude Code. There is **no build or
+`npm install` step** — the MCP server is zero-dependency.
+
+```text
+/plugin marketplace add alexanderop/claude-code-memory
+/plugin install memory@memory
 ```
 
-Then add it as a plugin. Either point a marketplace at the parent dir, or for a
-quick local install reference it from your settings. Verify with `/plugin` and
-`/mcp` (you should see the `memory` server and its `memory_*` tools).
+- `marketplace add <owner>/<repo>` registers this GitHub repo as a marketplace.
+- `install <plugin>@<marketplace>` — both are named `memory` here (plugin name
+  `memory`, marketplace name `memory`).
+
+Claude Code copies the plugin into `~/.claude/plugins/cache` and resolves
+`${CLAUDE_PLUGIN_ROOT}` automatically, so the bundled MCP server and hooks just
+work. They activate on the next turn — run `/reload-plugins` to pick them up
+without restarting. Verify with `/plugin` (shows `memory` enabled) and `/mcp`
+(shows the `memory` server with its `memory_*` tools).
+
+### Non-interactive / team install
+
+Declare it in `.claude/settings.json` (project) or `~/.claude/settings.json` (global):
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "memory": { "source": { "source": "github", "repo": "alexanderop/claude-code-memory" } }
+  },
+  "enabledPlugins": { "memory@memory": true }
+}
+```
+
+### Local development
+
+Point the marketplace at a local checkout instead of GitHub:
+
+```text
+/plugin marketplace add ~/Projects/memory-plugin
+/plugin install memory@memory
+```
 
 ## Background review (optional)
 

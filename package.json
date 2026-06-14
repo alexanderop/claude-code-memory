@@ -3,9 +3,5 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Hermes-style persistent memory MCP server + hooks for Claude Code",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "zod": "^3.23.8"
-  }
+  "description": "Hermes-style persistent memory MCP server + hooks for Claude Code. Zero runtime dependencies."
 }
