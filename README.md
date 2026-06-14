@@ -45,6 +45,22 @@ implementation (which splits learning into separate loops on purpose):
    reusable workflow — while it still has full context. Claude Code's native skill
    discovery then handles progressive disclosure.
 
+## The Curator (skill lifecycle)
+
+Ports Hermes' `active → stale (30d) → archived (90d)` aging so captured skills don't
+pile up forever.
+
+- **Use signal** — a `PostToolUse` hook on the `Skill` tool records real invocations
+  into a `.last-used` sidecar (`scripts/track-skill-use.mjs`). "Last used" is
+  `max(.last-used, SKILL.md mtime, dir mtime)`, so a skill that's invoked but never
+  edited isn't falsely aged out, and a fresh skill is never stale.
+- **Weekly sweep** — a `SessionStart` hook (`scripts/curate.mjs`) throttled to once per
+  7 days via a sentinel. Approximates Hermes' "every 7 days after idle" without a daemon.
+- **Safety** — **notify-only by default**: it reports stale/archivable skills in the
+  session context and only *moves files* when `MEMORY_CURATOR_ARCHIVE=1`. `pinned: true`
+  in frontmatter is never touched. Archiving **moves** (never deletes) into
+  `~/.claude/skills/.archive/` and is fully reversible.
+
 ## Install (as a Claude Code plugin)
 
 This repo is also a single-plugin **marketplace** (`.claude-plugin/marketplace.json`),
@@ -102,6 +118,11 @@ It is recursion-guarded (`MEMORY_REVIEW=1` on the child) and never blocks the tu
 | `MEMORY_CHAR_LIMIT` | `2200` | `MEMORY.md` limit |
 | `MEMORY_USER_CHAR_LIMIT` | `1375` | `USER.md` limit |
 | `MEMORY_REVIEW_ENABLED` | unset | `1` enables the Stop-hook review |
+| `MEMORY_SKILLS_DIR` | `~/.claude/skills` | Skills dir the Curator manages |
+| `MEMORY_CURATOR_ARCHIVE` | unset | `1` lets the Curator move (not just report) stale skills |
+| `MEMORY_CURATOR_STALE_DAYS` | `30` | Unused-days before a skill is "stale" |
+| `MEMORY_CURATOR_ARCHIVE_DAYS` | `90` | Unused-days before a skill is archivable |
+| `MEMORY_CURATOR_INTERVAL_DAYS` | `7` | Min days between Curator sweeps |
 
 ## Not included (vs Hermes)
 

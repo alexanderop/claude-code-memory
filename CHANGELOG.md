@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0
+
+The Curator — Hermes' `active → stale (30d) → archived (90d)` skill lifecycle.
+
+- **Use tracking** — a `PostToolUse` hook on the `Skill` tool records real
+  invocations into a `.last-used` sidecar; "last used" is
+  `max(.last-used, SKILL.md mtime, dir mtime)` so used-but-unedited skills aren't
+  falsely aged out (`lib/curator.mjs`, `scripts/track-skill-use.mjs`).
+- **Weekly sweep** — a throttled `SessionStart` hook reports stale/archivable
+  skills in context (`scripts/curate.mjs`).
+- **Safe by default** — notify-only; archiving requires `MEMORY_CURATOR_ARCHIVE=1`,
+  respects `pinned: true`, and *moves* (never deletes) into
+  `~/.claude/skills/.archive/`. Thresholds/interval configurable via env.
+
 ## 0.2.0
 
 Three-loop learning model, informed by reading the real

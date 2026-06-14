@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "memory",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": ".",
       "description": "Hermes-style bounded, curated persistent memory for Claude Code: MEMORY.md + USER.md injected at session start, managed via an MCP tool with capacity enforcement, substring matching, dedup, and security scanning."
     }
